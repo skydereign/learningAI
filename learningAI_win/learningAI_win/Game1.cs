@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using learningAI_win.Screens;
 #endregion
 
 namespace learningAI_win
@@ -18,6 +19,7 @@ namespace learningAI_win
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        List<Screen> screens;
 
         public Game1()
             : base()
@@ -34,8 +36,8 @@ namespace learningAI_win
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
+            screens = new List<Screen>();
+            screens.Add(new Simulation());
             base.Initialize();
         }
 
@@ -48,7 +50,7 @@ namespace learningAI_win
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            ContentLoader.LoadContent(Content);
         }
 
         /// <summary>
@@ -70,7 +72,11 @@ namespace learningAI_win
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // only want to update the top screen?
+            foreach(Screen s in screens)
+            {
+                s.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -83,7 +89,10 @@ namespace learningAI_win
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            foreach (Screen s in screens)
+            {
+                s.Draw(spriteBatch);
+            }
 
             base.Draw(gameTime);
         }
