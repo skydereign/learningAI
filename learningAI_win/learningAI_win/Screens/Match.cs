@@ -8,14 +8,14 @@ using System.Text;
 
 namespace learningAI_win.Screens
 {
-    public class Simulation : Screen
+    public class Match : Screen
     {
         public List<Entity> Entities;
 
-        public Simulation()
+        public Match()
         {
             Entities = new List<Entity>();
-            Entities.Add(new Enemy());
+            Entities.Add(new Enemy(new Vector2(100, 100)));
         }
         public override void Update(GameTime gameTime)
         {
@@ -31,6 +31,11 @@ namespace learningAI_win.Screens
             {
                 e.Draw(spriteBatch);
             }
+        }
+
+        public void Run()
+        {
+            //
         }
     }
 }

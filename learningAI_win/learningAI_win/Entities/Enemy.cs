@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using SquadAI.Source;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,13 @@ namespace learningAI_win.Entities
 {
     public class Enemy : Entity
     {
-        public Enemy ()
+        public Enemy(Vector2 position)
         {
-            //
+            Position = position;
+            Sprite = ContentLoader.Textures["circle"];
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             Console.WriteLine("30");
         }

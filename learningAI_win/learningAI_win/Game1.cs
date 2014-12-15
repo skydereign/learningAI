@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using learningAI_win.Screens;
+using SquadAI.Source;
 #endregion
 
 namespace learningAI_win
@@ -37,7 +38,6 @@ namespace learningAI_win
         protected override void Initialize()
         {
             screens = new List<Screen>();
-            screens.Add(new Simulation());
             base.Initialize();
         }
 
@@ -51,6 +51,7 @@ namespace learningAI_win
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             ContentLoader.LoadContent(Content);
+            screens.Add(new Match());
         }
 
         /// <summary>
@@ -89,10 +90,12 @@ namespace learningAI_win
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            spriteBatch.Begin();
             foreach (Screen s in screens)
             {
                 s.Draw(spriteBatch);
             }
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
