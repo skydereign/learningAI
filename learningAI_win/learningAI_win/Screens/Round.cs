@@ -17,6 +17,7 @@ namespace learningAI_win.Screens
         // returns it
         private List<SoldierPhenotype> phenotypes;
         private int roundSize;
+        private SoldierPhenotype finalPhenotype;
 
         public Round(SoldierPhenotype phenotype, int roundSize, Callback completionCall)
         {
@@ -55,7 +56,7 @@ namespace learningAI_win.Screens
 
             for (int i = 0; i < roundSize; i++)
             {
-                Match match = new Match();
+                Match match = new Match(phenotypes[i]);
                 Thread thread = new Thread(new ThreadStart(match.Run));
                 matches.Add(match);
                 threadMatches.Add(thread);
@@ -67,11 +68,16 @@ namespace learningAI_win.Screens
             for (int i = 0; i < roundSize; i++)
             {
                 threadMatches[i].Join();
-                // get the phenotype from the match
+                matches[i].EvaluateFitness();
             }
 
-            // crossbreed the top two
+            // sort matches in descending order by fitness
+            matches.Sort((match1, match2)=>(match1.EvaluateFitness()>match2.EvaluateFitness() ? 1 : 0));
 
+
+            // crossbreed the top two
+            finalPhenotype = matches[0].GetPhenotype();
+            finalPhenotype = finalPhenotype.Crossbreed(matches[1].GetPhenotype());
             CompletionCall(this); // end the Round
         }
 

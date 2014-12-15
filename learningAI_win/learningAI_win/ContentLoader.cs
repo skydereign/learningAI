@@ -15,6 +15,7 @@ namespace SquadAI.Source
         public static void LoadContent(ContentManager content)
         {
             Textures.Add("circle", content.Load<Texture2D>("Textures/circle"));
+            Textures.Add("bullet_enemy", content.Load<Texture2D>("Textures/bullet_enemy"));
             FontSmall = content.Load<SpriteFont>("Fonts/smallFont");
         }
     }

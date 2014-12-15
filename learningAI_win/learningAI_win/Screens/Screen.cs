@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using learningAI_win.Entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -14,5 +15,6 @@ namespace learningAI_win.Screens
 
         public abstract void Update(GameTime gameTime);
         public abstract void Draw(SpriteBatch spriteBatch);
+        public virtual void AddEntity(Entity entity) { }
     }
 }

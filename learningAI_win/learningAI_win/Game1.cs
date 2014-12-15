@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using learningAI_win.Screens;
 using SquadAI.Source;
+using learningAI_win.AI;
 #endregion
 
 namespace learningAI_win
@@ -20,7 +21,7 @@ namespace learningAI_win
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        List<Screen> screens;
+        public static List<Screen> screens;
 
         public Game1()
             : base()
@@ -51,7 +52,7 @@ namespace learningAI_win
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             ContentLoader.LoadContent(Content);
-            screens.Add(new Match());
+            screens.Add(new Match(new SoldierPhenotype()));
         }
 
         /// <summary>
@@ -74,9 +75,9 @@ namespace learningAI_win
                 Exit();
 
             // only want to update the top screen?
-            foreach(Screen s in screens)
+            for(int i=0; i<screens.Count; i++)
             {
-                s.Update(gameTime);
+                screens[i].Update(gameTime);
             }
 
             base.Update(gameTime);
