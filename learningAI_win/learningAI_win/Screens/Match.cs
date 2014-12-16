@@ -27,10 +27,10 @@ namespace learningAI_win.Screens
 
             this.phenotype = phenotype;
 
-            soldier = new Soldier(this, phenotype, new Vector2(300, 300));
+            soldier = new Soldier(this, phenotype, new Vector2(500, 300));
             Entities.Add(soldier);
 
-            enemy = new Enemy(this, soldier, new Vector2(100, 100));
+            enemy = new Enemy(this, soldier, new Vector2(400, 200));
             Entities.Add(enemy);
 
             soldier.Target = enemy;

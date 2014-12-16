@@ -27,6 +27,7 @@ namespace learningAI_win.Entities
                 if (other is Soldier)
                 {
                     Soldier soldier = (Soldier)other;
+                    soldier.RecentDamage += 10;
                     soldier.HP -= 10;
 
                     if(soldier.HP <= 0)

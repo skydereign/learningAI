@@ -10,12 +10,13 @@ namespace learningAI_win.Entities
 {
     public class Enemy : Entity
     {
+        public int VisionRange = 200;
+
         private const int chaseTime = 60;
         private const int bulletSpeed = 10;
-        private const int range = 200;
-        private const int moveRange = range - 100;
-        private const int visionRange = 300;
-        private const float visionSpan = (float)(Math.PI/2.0);
+        private const int range = 100;
+        private const int moveRange = range - 30;
+        private const float visionSpan = (float)(Math.PI/3.0);
         private enum wanderState { IDLE, WANDER, ROTATE_R, ROTATE_L, SIZE}
         private wanderState state;
 
@@ -24,8 +25,8 @@ namespace learningAI_win.Entities
         private int wanderTimer;
 
         public float HP;
-        private float speed = 1f;
-        private float angSpeed = 0.1f;
+        private float speed = 0.5f;
+        private float angSpeed = 0.05f;
         private Soldier target;
 
         public Enemy(Screen parentScreen, Soldier target, Vector2 position)
@@ -68,6 +69,11 @@ namespace learningAI_win.Entities
             else if(sightTimer > 0) // chase
             {
                 sightTimer--;
+                rotateTowards();
+                if ((Position - target.Position).Length() > moveRange)
+                {
+                    moveTowards();
+                }
             }
             else // wander
             {
@@ -121,9 +127,8 @@ namespace learningAI_win.Entities
             // TODO: implement cover
             float angTowardsTarget = (float)(Math.Atan2(Position.Y - target.Position.Y, target.Position.X - Position.X));
             float distance = (Position - target.Position).Length();
-            if (visionRange > distance && Math.Abs(angTowardsTarget - Rotation) < visionSpan/2)
+            if (VisionRange > distance && Math.Abs(angTowardsTarget - Rotation) < visionSpan/2)
             {
-                Console.WriteLine("inSight");
                 return true;
             }
             return false;

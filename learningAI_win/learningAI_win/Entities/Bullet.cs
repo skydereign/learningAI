@@ -16,7 +16,7 @@ namespace learningAI_win.Entities
         {
             this.source = source;
 
-            Sprite = ContentLoader.Textures["slash"];
+            Sprite = ContentLoader.Textures["bullet_enemy"];
             Position = position;
             Velocity = velocity;
             Rotation = (float)(Math.Atan2(-velocity.Y, velocity.X));
@@ -29,10 +29,34 @@ namespace learningAI_win.Entities
 
         public override void Collision(Entity other)
         {
-            if (other != source && !(other is Bullet))
+            if (other != source && !(other is Bullet) && !(other is Slash))
             {
-                Destroyed = true;
-                //other.Destroyed = true;
+                if (other is Soldier)
+                {
+                    Soldier soldier = (Soldier)other;
+                    soldier.RecentDamage += 10;
+                    soldier.HP -= 10;
+
+                    if (soldier.HP <= 0)
+                    {
+                        soldier.Destroyed = true;
+                    }
+                    Destroyed = true;
+                }
+
+
+                if (other is Enemy)
+                {
+                    Enemy enemy = (Enemy)other;
+                    enemy.HP -= 10;
+                    enemy.Notify();
+
+                    if (enemy.HP <= 0)
+                    {
+                        enemy.Destroyed = true;
+                    }
+                    Destroyed = true;
+                }
             }
         }
     }

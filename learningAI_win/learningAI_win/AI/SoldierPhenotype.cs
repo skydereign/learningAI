@@ -18,7 +18,7 @@ namespace learningAI_win.AI
 
         public Dictionary<trait, float> Traits = new Dictionary<trait, float>()
         {
-            {trait.SPEED, 1.0f}, {trait.ACCURACY, 1.0f}, {trait.DAMAGE_THRESHOLD, 5f}, {trait.RANGED_THRESHOLD, 3f}, {trait.MELEE_THRESHOLD, 4f}
+            {trait.SPEED, 2f}, {trait.ACCURACY, 1.0f}, {trait.DAMAGE_THRESHOLD, 5f}, {trait.RANGED_THRESHOLD, 3f}, {trait.MELEE_THRESHOLD, 4f}
         };
 
         public SoldierPhenotype Mutate()

@@ -64,16 +64,18 @@ namespace learningAI_win.Entities
             }
 
 
-            attack();
             if (melee)
             {
                 switch (state)
                 {
                     case states.ATTACK:
-                        //attack();
+                        attack();
                         break;
 
                     case states.RUN:
+                        Position.X += (float)Math.Cos(Target.Rotation)*Speed();
+                        Position.Y -= (float)Math.Sin(Target.Rotation)*Speed();
+                        run();
                         break;
 
                     case states.RETRIEVE:
@@ -106,6 +108,11 @@ namespace learningAI_win.Entities
             // exit -> ATTACK - item obtained and not in sight
             // exit -> RUN - item obtained and in sight or damage threshold met
             
+        }
+
+        public float Speed()
+        {
+            return Phenotype.Traits[SoldierPhenotype.trait.SPEED];
         }
 
 
@@ -155,27 +162,27 @@ namespace learningAI_win.Entities
                 }
             }
 
-            /*
+            
             // exit condition to RUN
-            if (recentDamage > Phenotype.Traits[SoldierPhenotype.trait.DAMAGE_THRESHOLD])
+            if (RecentDamage > Phenotype.Traits[SoldierPhenotype.trait.DAMAGE_THRESHOLD])
             {
                 // transition to run
-                recentDamage = 0;
+                RecentDamage = 0;
                 state = states.RUN;
                 return;
             }
 
             // exit condition to RETRIEVE (melee)
-            if (meleeItemPriority() > Phenotype.Traits[SoldierPhenotype.trait.MELEE_THRESHOLD])
+            //if (meleeItemPriority() > Phenotype.Traits[SoldierPhenotype.trait.MELEE_THRESHOLD])
             {
                 //
             }
 
             // exit condition to RETRIEVE (ranged)
-            if (rangedItemPriority() > Phenotype.Traits[SoldierPhenotype.trait.RANGED_THRESHOLD])
+            //if (rangedItemPriority() > Phenotype.Traits[SoldierPhenotype.trait.RANGED_THRESHOLD])
             {
                 //
-            }*/
+            }
         }
 
         private void run ()
@@ -188,6 +195,13 @@ namespace learningAI_win.Entities
             //       move to hiding spot
             // exit -> ATTACK - no longer seen
             // exit -> RETRIEVE - item threshold met
+
+
+            // exit condition to ATTACK
+            if(!Target.Alerted())
+            {
+                state = states.ATTACK;
+            }
         }
 
         private void retrieve ()
@@ -225,15 +239,15 @@ namespace learningAI_win.Entities
             float moveToPositionAngle = (float)(angTowardsTarget + Math.PI + dir*angSpeed);
 
             // find the point
-            Vector2 moveToPosition = new Vector2((float)(Target.Position.X + Math.Cos(moveToPositionAngle)*100), 
-                (float)(Target.Position.Y - Math.Sin(moveToPositionAngle)*100));
+            Vector2 moveToPosition = new Vector2((float)(Target.Position.X + Math.Cos(moveToPositionAngle)*(Target.VisionRange+10)), 
+                (float)(Target.Position.Y - Math.Sin(moveToPositionAngle)*(Target.VisionRange+10)));
 
             // find angle to that point
             float moveDirection = (float)Math.Atan2(Position.Y - moveToPosition.Y, moveToPosition.X - Position.X);
 
             // move to that point
-            Position.X += (float)Math.Cos(moveDirection) * 2;
-            Position.Y -= (float)Math.Sin(moveDirection) * 2;
+            Position.X += (float)Math.Cos(moveDirection) * Speed();
+            Position.Y -= (float)Math.Sin(moveDirection) * Speed();
         }
 
         private void moveTowardsTarget()
@@ -243,8 +257,8 @@ namespace learningAI_win.Entities
 
             if (Math.Abs(Utility.AngleBetween(Rotation, angTowardsTarget)) < Math.PI / 4)
             {
-                Position.X += (float)Math.Cos(Rotation) * 2;
-                Position.Y -= (float)Math.Sin(Rotation) * 2;
+                Position.X += (float)Math.Cos(Rotation) * Speed();
+                Position.Y -= (float)Math.Sin(Rotation) * Speed();
             }
                 // rotate
                 rotateTowards();
