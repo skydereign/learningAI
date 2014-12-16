@@ -16,6 +16,7 @@ namespace SquadAI.Source
         {
             Textures.Add("circle", content.Load<Texture2D>("Textures/circle"));
             Textures.Add("bullet_enemy", content.Load<Texture2D>("Textures/bullet_enemy"));
+            Textures.Add("slash", content.Load<Texture2D>("Textures/slash"));
             FontSmall = content.Load<SpriteFont>("Fonts/smallFont");
         }
     }

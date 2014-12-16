@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="AI\SoldierPhenotype.cs" />
     <Compile Include="ContentLoader.cs" />
+    <Compile Include="Entities\Slash.cs" />
     <Compile Include="Entities\Bullet.cs" />
     <Compile Include="Entities\Enemy.cs" />
     <Compile Include="Entities\Entity.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="Screens\Round.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\Match.cs" />
+    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -62,6 +64,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Textures\circle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\slash.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />

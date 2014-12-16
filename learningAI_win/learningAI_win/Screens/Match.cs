@@ -27,11 +27,15 @@ namespace learningAI_win.Screens
 
             this.phenotype = phenotype;
 
-            soldier = new Soldier(this, phenotype, new Vector2(400, 400));
+            soldier = new Soldier(this, phenotype, new Vector2(300, 300));
             Entities.Add(soldier);
 
             enemy = new Enemy(this, soldier, new Vector2(100, 100));
             Entities.Add(enemy);
+
+            soldier.Target = enemy;
+
+            random = new Random(1);
         }
         public override void Update(GameTime gameTime)
         {

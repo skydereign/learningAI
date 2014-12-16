@@ -16,7 +16,7 @@ namespace learningAI_win.Entities
         {
             this.source = source;
 
-            Sprite = ContentLoader.Textures["bullet_enemy"];
+            Sprite = ContentLoader.Textures["slash"];
             Position = position;
             Velocity = velocity;
             Rotation = (float)(Math.Atan2(-velocity.Y, velocity.X));
@@ -31,9 +31,8 @@ namespace learningAI_win.Entities
         {
             if (other != source && !(other is Bullet))
             {
-                Console.WriteLine(other.GetType());
                 Destroyed = true;
-                other.Destroyed = true;
+                //other.Destroyed = true;
             }
         }
     }

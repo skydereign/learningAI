@@ -10,6 +10,7 @@ namespace learningAI_win.Screens
 {
     public abstract class Screen
     {
+        public Random random;
         public delegate void Callback(Screen screen);
         public Callback CompletionCall;
 

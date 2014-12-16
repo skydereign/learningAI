@@ -11,14 +11,14 @@ namespace learningAI_win.AI
         {
             SPEED,
             ACCURACY,
-            RUN_THRESHOLD,
-            PICKUP_RANGED,
-            PICKUP_MELEE
+            DAMAGE_THRESHOLD, // damage that can be taken before entering RUN state
+            RANGED_THRESHOLD, // 
+            MELEE_THRESHOLD
         }
 
-        Dictionary<trait, float> Traits = new Dictionary<trait, float>()
+        public Dictionary<trait, float> Traits = new Dictionary<trait, float>()
         {
-            {trait.SPEED, 1.0f}
+            {trait.SPEED, 1.0f}, {trait.ACCURACY, 1.0f}, {trait.DAMAGE_THRESHOLD, 5f}, {trait.RANGED_THRESHOLD, 3f}, {trait.MELEE_THRESHOLD, 4f}
         };
 
         public SoldierPhenotype Mutate()
@@ -35,7 +35,7 @@ namespace learningAI_win.AI
             return cross;
         }
 
-        public string ToString ()
+        public string Stringify ()
         {
             return "[]";
         }
