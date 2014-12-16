@@ -24,6 +24,8 @@ namespace learningAI_win.Screens
             this.roundSize = roundSize;
             CompletionCall = completionCall;
 
+            random = new Random(1);
+
             // set up phenotypes
             phenotypes = new List<SoldierPhenotype>();
             phenotypes.Add(phenotype);
@@ -31,7 +33,7 @@ namespace learningAI_win.Screens
             // mutate the phenotype for extra matches
             for (int i = 1; i < roundSize; i++)
             {
-                phenotypes.Add(phenotype.Mutate());
+                phenotypes.Add(phenotype.Mutate(random));
             }
         }
 
@@ -51,6 +53,7 @@ namespace learningAI_win.Screens
         /// </summary>
         public void Run()
         {
+            Console.WriteLine("Round::Run - start");
             List<Thread> threadMatches = new List<Thread>();
             List<Match> matches = new List<Match>();
 
@@ -62,6 +65,7 @@ namespace learningAI_win.Screens
                 threadMatches.Add(thread);
                 thread.Start();
             }
+            Console.WriteLine("Round::Run - threads started");
 
 
             // join them
@@ -71,13 +75,15 @@ namespace learningAI_win.Screens
                 matches[i].EvaluateFitness();
             }
 
+            Console.WriteLine("Round::Run - threads joined");
+
             // sort matches in descending order by fitness
             matches.Sort((match1, match2)=>(match1.EvaluateFitness()>match2.EvaluateFitness() ? 1 : 0));
 
 
             // crossbreed the top two
             finalPhenotype = matches[0].GetPhenotype();
-            finalPhenotype = finalPhenotype.Crossbreed(matches[1].GetPhenotype());
+            finalPhenotype = finalPhenotype.Crossbreed(random, matches[1].GetPhenotype());
             CompletionCall(this); // end the Round
         }
 

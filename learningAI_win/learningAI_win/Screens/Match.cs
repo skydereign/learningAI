@@ -84,7 +84,7 @@ namespace learningAI_win.Screens
 
             while(running)
             {
-                //
+                Update(null);
             }
         }
 

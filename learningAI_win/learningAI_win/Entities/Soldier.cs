@@ -26,9 +26,11 @@ namespace learningAI_win.Entities
         public float HP;
         public float RecentDamage; // holds how much damage since last state transition
 
-
+        
         private float angSpeed = 0.1f;
         private int meleeTimer = 0;
+        private int rangeTimer = 0;
+        private int bulletSpeed = 10;
         
 
         public Soldier(Screen parentScreen, SoldierPhenotype phenotype, Vector2 position)
@@ -40,7 +42,7 @@ namespace learningAI_win.Entities
 
             HP = 100;
             RecentDamage = 0;
-            melee = true;
+            melee = false;
             state = states.ATTACK;
         }
 
@@ -64,24 +66,29 @@ namespace learningAI_win.Entities
             }
 
 
-            if (melee)
+            switch (state)
             {
-                switch (state)
-                {
-                    case states.ATTACK:
-                        attack();
-                        break;
+                case states.ATTACK:
+                    if (melee)
+                    {
+                        attackMelee();
+                    }
+                    else
+                    {
+                        attackRange();
+                    }
+                    break;
 
-                    case states.RUN:
-                        Position.X += (float)Math.Cos(Target.Rotation)*Speed();
-                        Position.Y -= (float)Math.Sin(Target.Rotation)*Speed();
-                        run();
-                        break;
+                case states.RUN:
+                    Position.X += (float)Math.Cos(Target.Rotation) * Speed();
+                    Position.Y -= (float)Math.Sin(Target.Rotation) * Speed();
+                    run();
+                    break;
 
-                    case states.RETRIEVE:
-                        break;
-                }
+                case states.RETRIEVE:
+                    break;
             }
+            
             // if melee
             // ATTACK - if no damage threshold
             //    if not seen
@@ -116,7 +123,7 @@ namespace learningAI_win.Entities
         }
 
 
-        private void attack ()
+        private void attackMelee ()
         {
             // ATTACK - if no damage threshold
             //    if not seen
@@ -162,7 +169,10 @@ namespace learningAI_win.Entities
                 }
             }
 
-            
+
+
+            //------------------------------------------------------------------------------------------------
+            // Exit State Conditions
             // exit condition to RUN
             if (RecentDamage > Phenotype.Traits[SoldierPhenotype.trait.DAMAGE_THRESHOLD])
             {
@@ -182,6 +192,32 @@ namespace learningAI_win.Entities
             //if (rangedItemPriority() > Phenotype.Traits[SoldierPhenotype.trait.RANGED_THRESHOLD])
             {
                 //
+            }
+        }
+
+        private void attackRange ()
+        {
+            // ATTACK - if no damage threshold
+            //    if not seen
+            //       move to behind enemy
+            //       move to enemy
+            //       attack
+            //    else if threshold not met
+            //       move to be in range of enemy
+            //       attack
+            // exit -> RUN - damage threshold met
+            // exit -> RETRIEVE - item threshold met
+            rotateTowards();
+            rangeAttack();
+            //------------------------------------------------------------------------------------------------
+            // Exit State Conditions
+            // exit condition to RUN
+            if (RecentDamage > Phenotype.Traits[SoldierPhenotype.trait.DAMAGE_THRESHOLD])
+            {
+                // transition to run
+                RecentDamage = 0;
+                state = states.RUN;
+                return;
             }
         }
 
@@ -287,6 +323,22 @@ namespace learningAI_win.Entities
             }
 
             meleeTimer = (meleeTimer + 1) % 30;
+        }
+
+        private void rangeAttack()
+        {
+            // create attack
+            if (rangeTimer == 0)
+            {
+                float direction = Rotation + Utility.DegToRad(parentScreen.random.Next(0, (int)Phenotype.Traits[SoldierPhenotype.trait.ACCURACY]));
+                Vector2 velocity = new Vector2(
+                       (float)Math.Cos(direction) * bulletSpeed,
+                       (float)-Math.Sin(direction) * bulletSpeed);
+
+                parentScreen.AddEntity(new Bullet(this, Position, velocity));
+            }
+
+            rangeTimer = (rangeTimer + 1) % 20;
         }
     }
 }

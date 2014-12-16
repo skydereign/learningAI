@@ -52,7 +52,15 @@ namespace learningAI_win
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             ContentLoader.LoadContent(Content);
-            screens.Add(new Match(new SoldierPhenotype()));
+            //screens.Add(new Match(new SoldierPhenotype()));
+
+            Round test = new Round(new SoldierPhenotype(), 5, Resolve);
+            test.Run();
+        }
+
+        public void Resolve (Screen screen)
+        {
+            //
         }
 
         /// <summary>
