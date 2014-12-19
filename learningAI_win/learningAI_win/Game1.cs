@@ -93,12 +93,6 @@ namespace learningAI_win
             for(int i=0; i<screens.Count; i++)
             {
                 screens[i].Update(gameTime);
-                screens[i].Update(gameTime);
-                screens[i].Update(gameTime);
-                screens[i].Update(gameTime);
-                screens[i].Update(gameTime);
-                screens[i].Update(gameTime);
-                screens[i].Update(gameTime);
             }
 
             base.Update(gameTime);

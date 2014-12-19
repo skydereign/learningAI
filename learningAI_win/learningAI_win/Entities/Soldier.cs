@@ -42,7 +42,7 @@ namespace learningAI_win.Entities
 
             HP = 100;
             RecentDamage = 0;
-            Melee = true;
+            Melee = Global.Melee;
             state = states.ATTACK;
 
             if (!Melee) // rule setting up relation between speed and accuracy

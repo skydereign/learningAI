@@ -20,7 +20,9 @@ namespace learningAI_win.AI
 
         public SoldierPhenotype()
         {
-            //
+            Traits[trait.SPEED] = Global.StartingPhenotype.Traits[trait.SPEED];
+            Traits[trait.ACCURACY] = Global.StartingPhenotype.Traits[trait.ACCURACY];
+            Traits[trait.DAMAGE_THRESHOLD] = Global.StartingPhenotype.Traits[trait.DAMAGE_THRESHOLD];
         }
 
         public SoldierPhenotype(float speed, float accuracy, float damage_threshold)
