@@ -171,7 +171,7 @@ namespace learningAI_win.Screens
             {
                 //Console.WriteLine(soldier.Destroyed ? "Loss" : "Victory");
             }
-            return (soldier.Destroyed || enemy.Destroyed);
+            return (soldier.Destroyed || enemy.Destroyed || gameTicks > 4000);
         }
     }
 }

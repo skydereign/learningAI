@@ -18,9 +18,34 @@ namespace learningAI_win.AI
 
         public float Fitness = 0f;
 
+        public SoldierPhenotype()
+        {
+            //
+        }
+
+        public SoldierPhenotype(float speed, float accuracy, float damage_threshold)
+        {
+            Traits[trait.SPEED] = speed;
+            Traits[trait.ACCURACY] = accuracy;
+            Traits[trait.DAMAGE_THRESHOLD] = damage_threshold;
+        }
+
+        public void Clear()
+        {
+            Traits[trait.SPEED] = 0;
+            Traits[trait.ACCURACY] = 0;
+            Traits[trait.DAMAGE_THRESHOLD] = 0;
+        }
+
         public Dictionary<trait, float> Traits = new Dictionary<trait, float>()
         {
-            {trait.SPEED, 2f}, {trait.ACCURACY, 30f}, {trait.DAMAGE_THRESHOLD, 10f}, {trait.RANGED_THRESHOLD, 3f}, {trait.MELEE_THRESHOLD, 4f}
+            {trait.SPEED, 1f}, {trait.ACCURACY, 30f}, {trait.DAMAGE_THRESHOLD, 10f}, {trait.RANGED_THRESHOLD, 3f}, {trait.MELEE_THRESHOLD, 4f}
+        };
+
+        // dictionary storing the changes during mutation
+        public Dictionary<trait, float> Changes = new Dictionary<trait, float>()
+        {
+            {trait.SPEED, 0}, {trait.ACCURACY, 0}, {trait.DAMAGE_THRESHOLD, 0}, {trait.RANGED_THRESHOLD, 0}, {trait.MELEE_THRESHOLD, 0}
         };
 
         public SoldierPhenotype Mutate(Random randomGen)
@@ -28,23 +53,38 @@ namespace learningAI_win.AI
             // TODO: store changes caused by mutation, after match, extract positive 
             SoldierPhenotype mutated = new SoldierPhenotype();
 
-            // copy over all of the various trait values
-            foreach (KeyValuePair<trait, float> pair in Traits)
+            if (!Global.UseHeuristic)
             {
-                // pair.Value, pair.Key
-                if (randomGen.Next() > 0.25f)
+                // copy over all of the various trait values
+                foreach (KeyValuePair<trait, float> pair in Traits)
                 {
-                    switch(pair.Key)
+                    // pair.Value, pair.Key
+                    if (randomGen.Next() > 0.25f)
                     {
-                        case trait.SPEED:
-                            mutated.Traits[pair.Key] = pair.Value + (float)(-0.2 + 0.4 * randomGen.NextDouble());
-                            break;
+                        float delta = 0f;
 
-                        case trait.DAMAGE_THRESHOLD: 
-                            mutated.Traits[pair.Key] = pair.Value + (float)(-3f + 6f * randomGen.NextDouble());
-                            
-                            break;
+                        switch (pair.Key)
+                        {
+                            case trait.SPEED:
+                                delta = (float)(-0.2 + 0.4 * randomGen.NextDouble());
+                                mutated.Traits[pair.Key] = pair.Value + delta;
+                                mutated.Changes[pair.Key] = delta;
+                                break;
+
+                            case trait.DAMAGE_THRESHOLD:
+                                delta = (float)(-3f + 6f * randomGen.NextDouble());
+                                mutated.Traits[pair.Key] = pair.Value + delta;
+                                break;
+                        }
                     }
+                }
+            }
+            else // use heuristic
+            {
+                // up values according to the heuristic
+                foreach (KeyValuePair<trait, float> pair in Traits)
+                {
+                    mutated.Traits[pair.Key] = pair.Value + Global.Heuristic.Traits[pair.Key];
                 }
             }
 

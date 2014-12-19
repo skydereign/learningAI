@@ -18,12 +18,15 @@ namespace learningAI_win.Screens
         private int roundSize;
         private int curRound;
         private SoldierPhenotype soldierPhenotype;
+        private SoldierPhenotype heuristic;
 
         public Manager(int roundCount, int roundSize)
         {
             this.roundCount = roundCount;
             this.roundSize = roundSize;
             curRound = 0;
+            heuristic = new SoldierPhenotype();
+            heuristic.Clear();
         }
 
         public override void Update(GameTime gameTime)
@@ -46,10 +49,12 @@ namespace learningAI_win.Screens
 
             while(curRound < roundCount)
             {
-                Round round = new Round(soldierPhenotype, roundSize, EndRound, random.Next());
+                Round round = new Round(soldierPhenotype, heuristic, roundSize, EndRound, random.Next());
                 round.Run();
                 curRound++;
             }
+
+            Console.WriteLine("Final Heuristic = " + heuristic);
         }
 
         /// <summary>
@@ -60,6 +65,7 @@ namespace learningAI_win.Screens
         {
             Round lastRound = (Round)screen;
             soldierPhenotype = lastRound.GetNewSoldier();
+            heuristic = lastRound.Heuristic;
         }
     }
 }

@@ -53,14 +53,14 @@ namespace learningAI_win
 
             ContentLoader.LoadContent(Content);
 
-            if (!true)
+            if (Global.Visual)
             {
                 screens.Add(new Match(new SoldierPhenotype()));
             }
             else
             {
                 //Round test = new Round(new SoldierPhenotype(), 5, Resolve);
-                Manager test = new Manager(100, 4);
+                Manager test = new Manager(Global.NumRounds, Global.RoundSize);
                 test.Run();
             }
         }

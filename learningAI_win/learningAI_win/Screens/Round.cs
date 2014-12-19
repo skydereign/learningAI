@@ -18,14 +18,18 @@ namespace learningAI_win.Screens
         private List<SoldierPhenotype> phenotypes;
         private int roundSize;
         private SoldierPhenotype finalPhenotype;
+        public SoldierPhenotype Heuristic;
 
-        public Round(SoldierPhenotype phenotype, int roundSize, Callback completionCall, int randomIndex)
+        public Round(SoldierPhenotype phenotype, SoldierPhenotype heuristic, int roundSize, Callback completionCall, int randomIndex)
         {
             Console.WriteLine("\nNEW ROUND");
             this.roundSize = roundSize;
             CompletionCall = completionCall;
 
             random = new Random(randomIndex);
+
+            // store the heuristic for later use
+            Heuristic = heuristic;
 
             // set up phenotypes
             phenotypes = new List<SoldierPhenotype>();
@@ -75,6 +79,8 @@ namespace learningAI_win.Screens
                 matches[i].EvaluateFitness();
             }
 
+            // store the original fitness before sorting, [0] is the unmutated soldier
+            float originalFitness = matches[0].GetPhenotype().Fitness;
 
             // sort matches in descending order by fitness
             matches = matches.OrderByDescending(match => match.Fitness()).ToList();
@@ -85,6 +91,31 @@ namespace learningAI_win.Screens
             finalPhenotype = finalPhenotype.Crossbreed(random, matches[1].GetPhenotype());
             Console.WriteLine("fitness 1 = " + matches[0].GetPhenotype().Fitness + ", fitness 2 = " + matches[1].GetPhenotype().Fitness);
             Console.WriteLine("Final Phenotype = " + finalPhenotype.ToString());
+
+
+
+            // make sure there is a fitness before calculating improvements
+            if (originalFitness != 0)
+            {
+                // add to heuristic by comparing with previous
+                foreach (SoldierPhenotype.trait trait in (SoldierPhenotype.trait[])Enum.GetValues(typeof(SoldierPhenotype.trait)))
+                {
+                    float deltaFitness1 = matches[0].Fitness() - originalFitness;
+                    float deltaFitness2 = matches[1].Fitness() - originalFitness;
+
+                    if (deltaFitness1 > 0f)
+                    {
+                        //Console.WriteLine("increase in fitness = " + deltaFitness1 * matches[0].GetPhenotype().Changes[trait]);
+                        Heuristic.Traits[trait] += deltaFitness1 * matches[0].GetPhenotype().Changes[trait];
+                    }
+                    if (deltaFitness2 > 0f)
+                    {
+                        Heuristic.Traits[trait] += deltaFitness2 * matches[1].GetPhenotype().Changes[trait];
+                    }
+                }
+            }
+
+
             CompletionCall(this); // end the Round
         }
 
