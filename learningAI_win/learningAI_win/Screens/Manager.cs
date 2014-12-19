@@ -40,14 +40,16 @@ namespace learningAI_win.Screens
         /// </summary>
         public void Run ()
         {
+            Console.WriteLine("Manager::Run");
+            soldierPhenotype = new SoldierPhenotype();
+            random = new Random(1);
+
             while(curRound < roundCount)
             {
-                Round round = new Round(soldierPhenotype, roundSize, EndRound);
+                Round round = new Round(soldierPhenotype, roundSize, EndRound, random.Next());
                 round.Run();
+                curRound++;
             }
-            // start next one
-            // continue until it finishes
-            // end, 
         }
 
         /// <summary>

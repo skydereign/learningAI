@@ -16,9 +16,11 @@ namespace learningAI_win.AI
             MELEE_THRESHOLD
         }
 
+        public float Fitness = 0f;
+
         public Dictionary<trait, float> Traits = new Dictionary<trait, float>()
         {
-            {trait.SPEED, 2f}, {trait.ACCURACY, 10f}, {trait.DAMAGE_THRESHOLD, 5f}, {trait.RANGED_THRESHOLD, 3f}, {trait.MELEE_THRESHOLD, 4f}
+            {trait.SPEED, 2f}, {trait.ACCURACY, 30f}, {trait.DAMAGE_THRESHOLD, 10f}, {trait.RANGED_THRESHOLD, 3f}, {trait.MELEE_THRESHOLD, 4f}
         };
 
         public SoldierPhenotype Mutate(Random randomGen)
@@ -30,10 +32,30 @@ namespace learningAI_win.AI
             foreach (KeyValuePair<trait, float> pair in Traits)
             {
                 // pair.Value, pair.Key
-                if (randomGen.Next() > 0.95f)
+                if (randomGen.Next() > 0.25f)
                 {
-                    mutated.Traits[pair.Key] = pair.Value + (float)(-0.4+0.8*randomGen.NextDouble());
+                    switch(pair.Key)
+                    {
+                        case trait.SPEED:
+                            mutated.Traits[pair.Key] = pair.Value + (float)(-0.2 + 0.4 * randomGen.NextDouble());
+                            break;
+
+                        case trait.DAMAGE_THRESHOLD: 
+                            mutated.Traits[pair.Key] = pair.Value + (float)(-3f + 6f * randomGen.NextDouble());
+                            
+                            break;
+                    }
                 }
+            }
+
+            if(mutated.Traits[trait.SPEED] <= 0)
+            {
+                mutated.Traits[trait.SPEED] = 0.2f;
+            }
+
+            if (mutated.Traits[trait.DAMAGE_THRESHOLD] < 0)
+            {
+                mutated.Traits[trait.DAMAGE_THRESHOLD] = 0;
             }
 
             // return
@@ -53,9 +75,9 @@ namespace learningAI_win.AI
             return child;
         }
 
-        public string Stringify ()
+        public override string ToString ()
         {
-            return "[]";
+            return "[S = " + Traits[trait.SPEED] + ", A = " + Traits[trait.ACCURACY] + ", D = " + Traits[trait.DAMAGE_THRESHOLD] + "]";
         }
     }
 }

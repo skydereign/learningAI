@@ -14,7 +14,7 @@ namespace learningAI_win.Entities
 
         private const int chaseTime = 60;
         private const int bulletSpeed = 10;
-        private const int range = 100;
+        private const int range = 200;
         private const int moveRange = range - 30;
         private const float visionSpan = (float)(Math.PI/3.0);
         private enum wanderState { IDLE, WANDER, ROTATE_R, ROTATE_L, SIZE}
@@ -160,7 +160,7 @@ namespace learningAI_win.Entities
 
         private void attack ()
         {
-            attackTimer = (attackTimer + 1) % 60;
+            attackTimer = (attackTimer + 1) % 20;
             if (attackTimer == 0)
             {
                 // TODO: aim to where the target is moving

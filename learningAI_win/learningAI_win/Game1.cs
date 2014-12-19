@@ -52,10 +52,17 @@ namespace learningAI_win
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             ContentLoader.LoadContent(Content);
-            //screens.Add(new Match(new SoldierPhenotype()));
 
-            Round test = new Round(new SoldierPhenotype(), 5, Resolve);
-            test.Run();
+            if (!true)
+            {
+                screens.Add(new Match(new SoldierPhenotype()));
+            }
+            else
+            {
+                //Round test = new Round(new SoldierPhenotype(), 5, Resolve);
+                Manager test = new Manager(100, 4);
+                test.Run();
+            }
         }
 
         public void Resolve (Screen screen)
@@ -85,6 +92,12 @@ namespace learningAI_win
             // only want to update the top screen?
             for(int i=0; i<screens.Count; i++)
             {
+                screens[i].Update(gameTime);
+                screens[i].Update(gameTime);
+                screens[i].Update(gameTime);
+                screens[i].Update(gameTime);
+                screens[i].Update(gameTime);
+                screens[i].Update(gameTime);
                 screens[i].Update(gameTime);
             }
 

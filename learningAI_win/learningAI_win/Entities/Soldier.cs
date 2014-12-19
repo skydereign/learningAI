@@ -20,7 +20,7 @@ namespace learningAI_win.Entities
 
         private enum states { ATTACK, RUN, RETRIEVE }
         private states state;
-        private bool melee; // holds wheter the soldier is using melee or not
+        public bool Melee; // holds wheter the soldier is using melee or not
 
 
         public float HP;
@@ -42,34 +42,23 @@ namespace learningAI_win.Entities
 
             HP = 100;
             RecentDamage = 0;
-            melee = false;
+            Melee = true;
             state = states.ATTACK;
+
+            if (!Melee) // rule setting up relation between speed and accuracy
+            {
+                float speed = Phenotype.Traits[SoldierPhenotype.trait.SPEED];
+                float accuracy = Math.Min(Math.Max(speed, 0f), 5f);
+                Phenotype.Traits[SoldierPhenotype.trait.ACCURACY] = 30f*accuracy;
+            }
         }
 
         public override void Update(GameTime gameTime)
         {
-            if(Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                Position.Y -= 1;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Position.X -= 1;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Position.Y += 1;
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Position.X += 1;
-            }
-
-
             switch (state)
             {
                 case states.ATTACK:
-                    if (melee)
+                    if (Melee)
                     {
                         attackMelee();
                     }
@@ -207,8 +196,15 @@ namespace learningAI_win.Entities
             //       attack
             // exit -> RUN - damage threshold met
             // exit -> RETRIEVE - item threshold met
+
+            float distance = (Position - Target.Position).Length();
+            if(distance > Target.VisionRange + 30)
+            {
+                moveTowardsTarget();
+            }
             rotateTowards();
             rangeAttack();
+
             //------------------------------------------------------------------------------------------------
             // Exit State Conditions
             // exit condition to RUN
@@ -232,6 +228,11 @@ namespace learningAI_win.Entities
             // exit -> ATTACK - no longer seen
             // exit -> RETRIEVE - item threshold met
 
+            float distance = (Position - Target.Position).Length();
+            if (!Melee && distance < Target.VisionRange + 30)
+            {
+                rangeAttack();
+            }
 
             // exit condition to ATTACK
             if(!Target.Alerted())
@@ -322,7 +323,7 @@ namespace learningAI_win.Entities
                 parentScreen.AddEntity(new Slash(this, Rotation, Position));
             }
 
-            meleeTimer = (meleeTimer + 1) % 30;
+            meleeTimer = (meleeTimer + 1) % 45;
         }
 
         private void rangeAttack()
@@ -330,12 +331,14 @@ namespace learningAI_win.Entities
             // create attack
             if (rangeTimer == 0)
             {
-                float direction = Rotation + Utility.DegToRad(parentScreen.random.Next(0, (int)Phenotype.Traits[SoldierPhenotype.trait.ACCURACY]));
+                int accuracyRange = (int)Phenotype.Traits[SoldierPhenotype.trait.ACCURACY]/2;
+                float direction = Rotation + Utility.DegToRad(parentScreen.random.Next(-accuracyRange, accuracyRange));
                 Vector2 velocity = new Vector2(
                        (float)Math.Cos(direction) * bulletSpeed,
                        (float)-Math.Sin(direction) * bulletSpeed);
 
                 parentScreen.AddEntity(new Bullet(this, Position, velocity));
+                Target.Notify();
             }
 
             rangeTimer = (rangeTimer + 1) % 20;

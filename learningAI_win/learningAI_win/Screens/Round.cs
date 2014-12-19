@@ -19,12 +19,13 @@ namespace learningAI_win.Screens
         private int roundSize;
         private SoldierPhenotype finalPhenotype;
 
-        public Round(SoldierPhenotype phenotype, int roundSize, Callback completionCall)
+        public Round(SoldierPhenotype phenotype, int roundSize, Callback completionCall, int randomIndex)
         {
+            Console.WriteLine("\nNEW ROUND");
             this.roundSize = roundSize;
             CompletionCall = completionCall;
 
-            random = new Random(1);
+            random = new Random(randomIndex);
 
             // set up phenotypes
             phenotypes = new List<SoldierPhenotype>();
@@ -34,6 +35,7 @@ namespace learningAI_win.Screens
             for (int i = 1; i < roundSize; i++)
             {
                 phenotypes.Add(phenotype.Mutate(random));
+                //Console.WriteLine("phenotype = " + phenotypes[i].ToString());
             }
         }
 
@@ -53,7 +55,6 @@ namespace learningAI_win.Screens
         /// </summary>
         public void Run()
         {
-            Console.WriteLine("Round::Run - start");
             List<Thread> threadMatches = new List<Thread>();
             List<Match> matches = new List<Match>();
 
@@ -65,7 +66,6 @@ namespace learningAI_win.Screens
                 threadMatches.Add(thread);
                 thread.Start();
             }
-            Console.WriteLine("Round::Run - threads started");
 
 
             // join them
@@ -75,22 +75,22 @@ namespace learningAI_win.Screens
                 matches[i].EvaluateFitness();
             }
 
-            Console.WriteLine("Round::Run - threads joined");
 
             // sort matches in descending order by fitness
-            matches.Sort((match1, match2)=>(match1.EvaluateFitness()>match2.EvaluateFitness() ? 1 : 0));
+            matches = matches.OrderByDescending(match => match.Fitness()).ToList();
 
 
             // crossbreed the top two
             finalPhenotype = matches[0].GetPhenotype();
             finalPhenotype = finalPhenotype.Crossbreed(random, matches[1].GetPhenotype());
+            Console.WriteLine("fitness 1 = " + matches[0].GetPhenotype().Fitness + ", fitness 2 = " + matches[1].GetPhenotype().Fitness);
+            Console.WriteLine("Final Phenotype = " + finalPhenotype.ToString());
             CompletionCall(this); // end the Round
         }
 
         public SoldierPhenotype GetNewSoldier ()
         {
-            // update
-            return new SoldierPhenotype();
+            return finalPhenotype;
         }
     }
 }

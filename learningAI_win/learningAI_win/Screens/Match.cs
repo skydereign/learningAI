@@ -20,6 +20,8 @@ namespace learningAI_win.Screens
         private Soldier soldier;
         private Enemy enemy;
 
+        private int gameTicks = 0;
+
         public Match(SoldierPhenotype phenotype)
         {
             Entities = new List<Entity>();
@@ -27,10 +29,10 @@ namespace learningAI_win.Screens
 
             this.phenotype = phenotype;
 
-            soldier = new Soldier(this, phenotype, new Vector2(500, 300));
+            soldier = new Soldier(this, phenotype, new Vector2(400, 200));
             Entities.Add(soldier);
 
-            enemy = new Enemy(this, soldier, new Vector2(400, 200));
+            enemy = new Enemy(this, soldier, new Vector2(200, 100));
             Entities.Add(enemy);
 
             soldier.Target = enemy;
@@ -39,6 +41,7 @@ namespace learningAI_win.Screens
         }
         public override void Update(GameTime gameTime)
         {
+            gameTicks++;
             foreach (Entity e in Entities)
             {
                 e.Update(gameTime);
@@ -63,7 +66,6 @@ namespace learningAI_win.Screens
 
             if(detectEnd())
             {
-                Console.WriteLine("detectEnd triggered");
                 running = false;
                 Game1.screens.Remove(this);
             }
@@ -93,13 +95,54 @@ namespace learningAI_win.Screens
             newEntities.Add(entity);
         }
 
+        public float Fitness ()
+        {
+            return soldier.Phenotype.Fitness;
+        }
+
         public float EvaluateFitness ()
         {
+            float fitness = 0;
             // ticks to win, 0.1
-            // win, 0.45
+            if(enemy.HP <= 0) // soldier won
+            {
+                // use shorter as better
+                float val = Math.Max(Math.Min((3000f - gameTicks) / 3000f, 1), 0);
+                fitness +=  val * 0.1f;
+            }
+            else
+            {
+                // enemey won, use longer as better
+                float val = Math.Max(Math.Min((gameTicks) / 3000f, 1), 0);
+                fitness += val * 0.1f;
+            }
+
+            if (soldier.Melee)
+            {
+                fitness += soldier.Phenotype.Traits[SoldierPhenotype.trait.SPEED] / 40f;
+            }
             // percent health, 0.2
+            fitness += soldier.HP / 100.0f * 0.2f;
+
+            // win, 0.45
+            if(enemy.HP <= 0)
+            {
+                //Console.WriteLine("victory");
+                fitness += 0.45f;
+            }
+
             // enemy health, 0.25
-            return 0f;
+            fitness -= ((enemy.HP - 100) / 100f)*0.25f;
+
+
+            // if ran out of time, reduce fitness
+            if(gameTicks > 3000)
+            {
+                fitness -= 0.2f;
+            }
+            soldier.Phenotype.Fitness = fitness;
+            //Console.WriteLine("[" + soldier.Phenotype.ToString() + "] fitness = " + fitness);
+            return fitness;
         }
 
         public SoldierPhenotype GetPhenotype ()
@@ -124,6 +167,10 @@ namespace learningAI_win.Screens
 
         private bool detectEnd()
         {
+            if ((soldier.Destroyed || enemy.Destroyed))
+            {
+                //Console.WriteLine(soldier.Destroyed ? "Loss" : "Victory");
+            }
             return (soldier.Destroyed || enemy.Destroyed);
         }
     }
